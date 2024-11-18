@@ -1,88 +1,98 @@
-document.addEventListener("DOMContentLoaded", () => {
-  // Initialize or retrieve data from localStorage
-  const categories = JSON.parse(localStorage.getItem("categories")) || {};
-  const expensesList = JSON.parse(localStorage.getItem("expenses")) || [];
+// Consolidated data array
+const financeData = [];
 
-  // Function to update category amounts
-  const updateCategoryAmount = (category, amount) => {
-    // Update the category total in the object
-    categories[category] = (categories[category] || 0) + amount;
+// Function to add data to the table
+function addToTable(source, amount, date, category, type) {
+  const table = document.getElementById("expenses-result");
 
-    // Update the category total in localStorage
-    localStorage.setItem("categories", JSON.stringify(categories));
+  // Create a new row
+  const row = document.createElement("tr");
 
-    // Update the displayed amount
-    const categoryElement = document.querySelector(
-      `.category h3:contains(${category})`
-    )?.parentElement.nextElementSibling;
+  // Add cells for each column
+  row.innerHTML = `
+        <td>${
+          type === "income"
+            ? "Income: "
+            : type === "debt"
+            ? "Debt: "
+            : "Expense: "
+        } ${source}</td>
+        <td>#${amount}</td>
+        <td>${date}</td>
+        <td>${category}</td>
+        <td class="delete">
+            <img src="images/delete.svg" alt="Delete Icon" class="delete-icon" style="cursor: pointer; width: 20px; height: 20px;">
+        </td>
+    `;
 
-    if (categoryElement) {
-      categoryElement.textContent = categories[category].toLocaleString();
-    }
-  };
+  // Append the row to the table
+  table.appendChild(row);
 
-  // Function to add an entry to the Expenses table
-  const addExpenseToTable = ({ source, amount, date, category }) => {
-    const table = document.getElementById("expenses-result");
+  // Add delete functionality
+  row.querySelector(".delete-icon").addEventListener("click", () => {
+    const index = financeData.findIndex(
+      (item) =>
+        item.source === source &&
+        item.amount === amount &&
+        item.date === date &&
+        item.category === category &&
+        item.type === type
+    );
 
-    const newRow = table.insertRow();
-    newRow.innerHTML = `
-            <td>${source}</td>
-            <td>${amount.toLocaleString()}</td>
-            <td>${new Date(date).toLocaleDateString()}</td>
-            <td>${category}</td>
-        `;
-  };
+    // Remove from array and table
+    if (index !== -1) financeData.splice(index, 1);
+    table.removeChild(row);
 
-  // Load stored data into the table and categories
-  const loadStoredData = () => {
-    // Populate categories
-    for (const [category, amount] of Object.entries(categories)) {
-      updateCategoryAmount(category, 0); // Update the display only
-    }
+    // Update JSON file
+    updateFinanceJSON();
+  });
+}
 
-    // Populate the Expenses table
-    expensesList.forEach(addExpenseToTable);
-  };
+// Function to handle form submissions
+function handleFormSubmit(event, type) {
+  event.preventDefault();
 
-  // Function to handle form submissions
-  const handleFormSubmit = (event, formType) => {
-    event.preventDefault();
+  // Get form values
+  const form = event.target;
+  const source = form.querySelector(`[id*='source']`).value;
+  const amount = form.querySelector(`[id*='amount']`).value;
+  const date = form.querySelector(`[id*='date']`).value;
+  const category = form.querySelector(`[id*='category']`).value;
 
-    const form = event.target;
-    const source = form.querySelector('[name="source"]').value;
-    const amount = parseFloat(form.querySelector('[name="amount"]').value);
-    const date = form.querySelector('[name="date"]').value;
-    const category = form.querySelector('[name="category"]').value;
+  // Add to table and data array
+  addToTable(source, amount, date, category, type);
+  financeData.push({ type, source, amount, date, category });
 
-    if (!source || isNaN(amount) || !date || !category) return;
+  // Update JSON file
+  updateFinanceJSON();
 
-    // Update the category total
-    updateCategoryAmount(category, amount);
+  // Clear the form
+  form.reset();
+}
 
-    // Save the entry to localStorage
-    const entry = { source, amount, date, category, type: formType };
-    expensesList.push(entry);
-    localStorage.setItem("expenses", JSON.stringify(expensesList));
+// Function to update the JSON file
+function updateFinanceJSON() {
+  const jsonData = JSON.stringify(financeData, null, 2);
+  console.log("Updated JSON Data:\n", jsonData);
 
-    // Add the entry to the table
-    addExpenseToTable(entry);
+  // Simulate saving JSON to file
+  const blob = new Blob([jsonData], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "finance.JSON";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
 
-    // Reset the form
-    form.reset();
-  };
-
-  // Attach event listeners to forms
-  document
-    .getElementById("income-form")
-    .addEventListener("submit", (event) => handleFormSubmit(event, "Income"));
-  document
-    .getElementById("debt-form")
-    .addEventListener("submit", (event) => handleFormSubmit(event, "Debt"));
-  document
-    .getElementById("expenses-form")
-    .addEventListener("submit", (event) => handleFormSubmit(event, "Expense"));
-
-  // Load stored data on page load
-  loadStoredData();
-});
+// Attach event listeners to all forms
+document
+  .getElementById("income-form")
+  .addEventListener("submit", (e) => handleFormSubmit(e, "income"));
+document
+  .getElementById("debt-form")
+  .addEventListener("submit", (e) => handleFormSubmit(e, "debt"));
+document
+  .getElementById("expenses-form")
+  .addEventListener("submit", (e) => handleFormSubmit(e, "expense"));

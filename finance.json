@@ -1,0 +1,23 @@
+[
+  {
+    "type": "income",
+    "source": "Freelancing",
+    "amount": "50000",
+    "date": "2024-11-18",
+    "category": "Transport"
+  },
+  {
+    "type": "debt",
+    "source": "Loan from John",
+    "amount": "100000",
+    "date": "2024-11-17",
+    "category": "Health"
+  },
+  {
+    "type": "expense",
+    "source": "Groceries",
+    "amount": "20000",
+    "date": "2024-11-18",
+    "category": "Food & Drinks"
+  }
+]
