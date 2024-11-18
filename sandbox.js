@@ -1,48 +1,88 @@
-// Select forms and list
-const incomeForm = document.getElementById('income-form');
-const debtForm = document.getElementById('debt-form');
-const expensesForm = document.getElementById('expenses-form');
-const entriesList = document.querySelector('.entries-list');
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize or retrieve data from localStorage
+  const categories = JSON.parse(localStorage.getItem("categories")) || {};
+  const expensesList = JSON.parse(localStorage.getItem("expenses")) || [];
 
-// Helper function to save to localStorage
-function saveEntry(type, data) {
-  const entries = JSON.parse(localStorage.getItem(type)) || [];
-  entries.push(data);
-  localStorage.setItem(type, JSON.stringify(entries));
-}
+  // Function to update category amounts
+  const updateCategoryAmount = (category, amount) => {
+    // Update the category total in the object
+    categories[category] = (categories[category] || 0) + amount;
 
-// Helper function to render entries
-function renderEntries() {
-  entriesList.innerHTML = '';
-  const allEntries = ['income', 'debt', 'expenses'].flatMap(type => {
-    const entries = JSON.parse(localStorage.getItem(type)) || [];
-    return entries.map(entry => ({ ...entry, type }));
-  });
+    // Update the category total in localStorage
+    localStorage.setItem("categories", JSON.stringify(categories));
 
-  allEntries.forEach(entry => {
-    const li = document.createElement('li');
-    li.className = `${entry.type}-entry`;
-    li.textContent = `${entry.type.toUpperCase()}: ${entry.source} - #${entry.amount} on ${entry.date} (${entry.category})`;
-    entriesList.appendChild(li);
-  });
-}
+    // Update the displayed amount
+    const categoryElement = document.querySelector(
+      `.category h3:contains(${category})`
+    )?.parentElement.nextElementSibling;
 
-// Form submission handlers
-[incomeForm, debtForm, expensesForm].forEach(form => {
-  form.addEventListener('submit', e => {
-    e.preventDefault();
-    const formData = new FormData(form);
-    const entry = {
-      source: formData.get('source'),
-      amount: formData.get('amount'),
-      date: formData.get('date'),
-      category: formData.get('category'),
-    };
-    saveEntry(form.id.split('-')[0], entry);
+    if (categoryElement) {
+      categoryElement.textContent = categories[category].toLocaleString();
+    }
+  };
+
+  // Function to add an entry to the Expenses table
+  const addExpenseToTable = ({ source, amount, date, category }) => {
+    const table = document.getElementById("expenses-result");
+
+    const newRow = table.insertRow();
+    newRow.innerHTML = `
+            <td>${source}</td>
+            <td>${amount.toLocaleString()}</td>
+            <td>${new Date(date).toLocaleDateString()}</td>
+            <td>${category}</td>
+        `;
+  };
+
+  // Load stored data into the table and categories
+  const loadStoredData = () => {
+    // Populate categories
+    for (const [category, amount] of Object.entries(categories)) {
+      updateCategoryAmount(category, 0); // Update the display only
+    }
+
+    // Populate the Expenses table
+    expensesList.forEach(addExpenseToTable);
+  };
+
+  // Function to handle form submissions
+  const handleFormSubmit = (event, formType) => {
+    event.preventDefault();
+
+    const form = event.target;
+    const source = form.querySelector('[name="source"]').value;
+    const amount = parseFloat(form.querySelector('[name="amount"]').value);
+    const date = form.querySelector('[name="date"]').value;
+    const category = form.querySelector('[name="category"]').value;
+
+    if (!source || isNaN(amount) || !date || !category) return;
+
+    // Update the category total
+    updateCategoryAmount(category, amount);
+
+    // Save the entry to localStorage
+    const entry = { source, amount, date, category, type: formType };
+    expensesList.push(entry);
+    localStorage.setItem("expenses", JSON.stringify(expensesList));
+
+    // Add the entry to the table
+    addExpenseToTable(entry);
+
+    // Reset the form
     form.reset();
-    renderEntries();
-  });
-});
+  };
 
-// Initial render
-document.addEventListener('DOMContentLoaded', renderEntries);
+  // Attach event listeners to forms
+  document
+    .getElementById("income-form")
+    .addEventListener("submit", (event) => handleFormSubmit(event, "Income"));
+  document
+    .getElementById("debt-form")
+    .addEventListener("submit", (event) => handleFormSubmit(event, "Debt"));
+  document
+    .getElementById("expenses-form")
+    .addEventListener("submit", (event) => handleFormSubmit(event, "Expense"));
+
+  // Load stored data on page load
+  loadStoredData();
+});
