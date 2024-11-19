@@ -43,8 +43,9 @@ function addToTable(source, amount, date, category, type) {
     if (index !== -1) financeData.splice(index, 1);
     table.removeChild(row);
 
-    // Update JSON file
-    updateFinanceJSON();
+    // Update JSON data and category totals
+    updateCategoryTotals();
+    logFinanceJSON();
   });
 }
 
@@ -55,7 +56,7 @@ function handleFormSubmit(event, type) {
   // Get form values
   const form = event.target;
   const source = form.querySelector(`[id*='source']`).value;
-  const amount = form.querySelector(`[id*='amount']`).value;
+  const amount = parseFloat(form.querySelector(`[id*='amount']`).value);
   const date = form.querySelector(`[id*='date']`).value;
   const category = form.querySelector(`[id*='category']`).value;
 
@@ -63,27 +64,79 @@ function handleFormSubmit(event, type) {
   addToTable(source, amount, date, category, type);
   financeData.push({ type, source, amount, date, category });
 
-  // Update JSON file
-  updateFinanceJSON();
+  // Update category totals and log JSON
+  updateCategoryTotals();
+  logFinanceJSON();
 
   // Clear the form
   form.reset();
 }
 
-// Function to update the JSON file
-function updateFinanceJSON() {
+// Function to update the category totals
+function updateCategoryTotals() {
+    // Initialize totals for each category
+    const categoryTotals = {
+        food: 0,
+        groceries: 0,
+        shopping: 0,
+        transport: 0,
+        entertainment: 0,
+        utilities: 0,
+        health: 0,
+        home: 0,
+        income: 0,
+        debt: 0,
+        total: 0 // Total starts at 0
+    };
+
+    // Calculate totals based on financeData
+    financeData.forEach((item) => {
+        if (item.category in categoryTotals) {
+            // Add amounts to respective categories
+            categoryTotals[item.category] += item.amount;
+        }
+
+        // Update total based on type
+        if (item.type === 'income') {
+            categoryTotals.total += item.amount; // Add income
+        } else if (item.type === 'debt' || item.type === 'expense') {
+            categoryTotals.total -= item.amount; // Subtract debt/expense
+        }
+    });
+
+    // Update the category divs
+    for (const [key, value] of Object.entries(categoryTotals)) {
+        const amountElement = document.querySelector(`.amount-${key}`);
+        if (amountElement) {
+            amountElement.textContent = value.toLocaleString(); // Format number with commas
+        }
+    }
+
+    // Update feedback based on total amount
+    const totalAmount = categoryTotals.total;
+    const feedbackText = document.getElementById("feedback-text");
+    const feedbackImage = document.getElementById("feedback-image");
+
+    if (totalAmount < 0) {
+        feedbackText.textContent = "You need to make more money";
+        feedbackImage.src = "images/verybad.svg";
+    } else if (totalAmount >= 0 && totalAmount <= 50000) {
+        feedbackText.textContent = "You can save more than you spend";
+        feedbackImage.src = "images/poor.svg";
+    } else if (totalAmount >= 50001 && totalAmount <= 100000) {
+        feedbackText.textContent = "Great, but you can do better";
+        feedbackImage.src = "images/good.svg";
+    } else if (totalAmount > 100000) {
+        feedbackText.textContent = "Nice, keep saving";
+        feedbackImage.src = "images/verygood.svg";
+    }
+}
+
+
+// Function to log the JSON data
+function logFinanceJSON() {
   const jsonData = JSON.stringify(financeData, null, 2);
   console.log("Updated JSON Data:\n", jsonData);
-
-  // Simulate saving JSON to file
-  const blob = new Blob([jsonData], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "finance.JSON";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
 }
 
 // Attach event listeners to all forms

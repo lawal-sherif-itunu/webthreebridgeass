@@ -19,6 +19,7 @@ header {
   display: flex;
   justify-content: space-between;
   border-bottom: red solid;
+  margin-bottom: 2rem;
 }
 
 .cart {
@@ -35,6 +36,17 @@ header {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+
+#feedback {
+  border-color: red;
+}
+
+#feedback h3 {
+  color: black;
+  font-size: 10px;
 }
 
 .category h3 {
@@ -45,7 +57,16 @@ form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  width: 30%;
+  /* width: 30%; */
+}
+
+.forms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 2rem;
 }
 
 form input,
@@ -54,6 +75,7 @@ select {
   border: 1px solid black;
   border-radius: 1rem;
   padding: 0.5rem;
+  padding-inline: 5rem;
   width: 100%;
   font-size: 16px;
   text-align: center;
@@ -63,16 +85,8 @@ select {
 button {
   background-color: red;
   color: white;
-  border: none;
+  border: red solid;
   font-weight: bold;
-}
-
-.forms {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  justify-content: space-between;
-  width: 100%;
 }
 
 #expenses-result {

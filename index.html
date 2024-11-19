@@ -35,14 +35,7 @@
                 
                 <label for="income-category">Which income category?</label>
                 <select id="income-category" name="category" required>
-                    <option value="food">Food & Drinks</option>
-                    <option value="groceries">Groceries</option>
-                    <option value="shopping">Shopping</option>
-                    <option value="transport">Transport</option>
-                    <option value="entertainment">Entertainment</option>
-                    <option value="utilities">Utilities</option>
-                    <option value="health">Health & Fitness</option>
-                    <option value="home">Home</option>
+                    <option value="income">Income</option>
                 </select>
                 <button id="income-submit" type="submit">Add Income</button>
             </form>
@@ -61,14 +54,7 @@
                 
                 <label for="debt-category">What did you spend the debt on?</label>
                 <select id="debt-category" name="category" required>
-                <option value="food">Food & Drinks</option>
-                <option value="groceries">Groceries</option>
-                <option value="shopping">Shopping</option>
-                <option value="transport">Transport</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="utilities">Utilities</option>
-                <option value="health">Health & Fitness</option>
-                <option value="home">Home</option>
+                <option value="debt">Debt</option>
                 </select>
                 <button type="submit">Add Debt</button>
             </form>
@@ -87,14 +73,14 @@
                 
                 <label for="expense-category">Which expense category?</label>
                 <select id="expense-category" name="category" required>
-                <option value="food">Food & Drinks</option>
-                <option value="groceries">Groceries</option>
-                <option value="shopping">Shopping</option>
-                <option value="transport">Transport</option>
-                <option value="entertainment">Entertainment</option>
-                <option value="utilities">Utilities</option>
-                <option value="health">Health & Fitness</option>
-                <option value="home">Home</option>
+                    <option value="food">Food & Drinks</option>
+                    <option value="groceries">Groceries</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="transport">Transport</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="health">Health & Fitness</option>
+                    <option value="home">Home</option>
                 </select>
                 <button type="submit">Add Expense</button>
             </form>
@@ -104,10 +90,26 @@
         <div class="cart">
             <div class="category">
                 <div class="cat-head">
+                    <img src="images/currency_exchange_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
+                    <h3>Income</h3>
+                </div>
+                <div class="amount-income">0</div>
+            </div>
+
+            <div class="category">
+                <div class="cat-head">
+                    <img src="images/currency_exchange_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
+                    <h3>Debts</h3>
+                </div>
+                <div class="amount-debt">0</div>
+            </div>
+
+            <div class="category">
+                <div class="cat-head">
                     <img src="images/restaurant_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Food & Drinks</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-food">0</div>
             </div>
         
             <div class="category">
@@ -115,7 +117,7 @@
                     <img src="images/shopping_basket_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Groceries</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-groceries">0</div>
             </div>
         
             <div class="category">
@@ -123,7 +125,7 @@
                     <img src="images/shopping_cart_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Shopping</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-shopping">0</div>
             </div>
         
             <div class="category">
@@ -131,7 +133,7 @@
                     <img src="images/directions_bus_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Transport</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-transport">0</div>
             </div>
         
             <div class="category">
@@ -139,7 +141,7 @@
                     <img src="images/theaters_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Entertainment</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-entertainment">0</div>
             </div>
         
             <div class="category">
@@ -147,7 +149,7 @@
                     <img src="images/electrical_services_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>utilities</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-utilities">0</div>
             </div>
         
             <div class="category">
@@ -155,7 +157,7 @@
                     <img src="images/health_and_safety_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Health & Fitness</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-health">0</div>
             </div>
         
             <div class="category">
@@ -163,15 +165,7 @@
                     <img src="images/home_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Home</h3>
                 </div>
-                <div class="amount-food">20,000</div>
-            </div>
-        
-            <div class="category">
-                <div class="cat-head">
-                    <img src="images/currency_exchange_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
-                    <h3>Income</h3>
-                </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-home">0</div>
             </div>
         
             <div class="category">
@@ -179,8 +173,16 @@
                     <img src="images/query_stats_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg" alt="">
                     <h3>Total</h3>
                 </div>
-                <div class="amount-food">20,000</div>
+                <div class="amount-total">0</div>
             </div>
+
+            <div id="feedback" class="category">
+                <div class="feedback-expression">
+                    <img src="images/default.svg" alt="" id="feedback-image">
+                    <h3 id="feedback-text">Your financial feedback will appear here</h3>
+                </div>
+            </div>
+            
         </div>
     
         <h2>EXPENSES OVERVIEW</h2>
